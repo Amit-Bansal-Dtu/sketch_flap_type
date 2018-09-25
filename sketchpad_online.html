@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Online Sketching</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script type="text/javascript">
+    let canvas, ctx;
+    let mouseX, mouseY, mouseDown =0, a1=0, b1=0, c1=0, size=3;
+    function drawDot(ctx, x, y, size, a1, b1, c1){
+        r=a1; g=b1; b=c1; a=255;
+        ctx.fillStyle="rgba("+r+","+g+","+b+","+(a/255)+")";
+        ctx.beginPath();
+        ctx.arc(x, y, size, 0, Math.PI*2, true);
+        ctx.closePath();
+        ctx.fill();
+    }
+    function clearCanvas(canvas, ctx){
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+    function sketchpad_mouseDown(){
+        mouseDown = 1;
+        drawDot(ctx, mouseX, mouseY, size, a1, b1, c1);
+    }
+    function sketchpad_mouseUp(){
+        mouseDown=0;
+    }
+    function sketchpad_mouseMove(e){
+        getMousePos(e);
+        if(mouseDown==1){
+            drawDot(ctx, mouseX, mouseY, size, a1, b1, c1);
+        }
+    }
+    function getMousePos(e){
+        if(!e){
+            let e = event;
+        }
+        if(e.offsetX){
+            mouseX = e.offsetX;
+            mouseY = e.offsetY;
+        }
+        else if(e.layerX){
+            mouseX = e.layerX;
+            mouseY = e.layerY;
+        }
+    }
+    function init(){
+        canvas = document.getElementById('sketchpad');
+        if(canvas.getContext){
+            ctx = canvas.getContext('2d');
+        }
+        if(ctx){
+            canvas.addEventListener('mousedown', sketchpad_mouseDown, false);
+            canvas.addEventListener('mousemove', sketchpad_mouseMove, false);
+            canvas.addEventListener('mouseup', sketchpad_mouseUp, false);
+        }
+    }
+    function erase(){
+        a1 = 255;
+        b1= 255;
+        c1= 255;
+    }
+    function pick_color(a, b, c){
+        a1 =a;
+        b1=b;
+        c1=c;
+    }
+    function inc_size(){
+        size=size+1;
+    }
+    function dec_size(){
+        size= size-1;
+    }
+    </script>
+    <style>
+    #sketchpadapp{
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+    .leftside{
+        float: left;
+        width: 220px;
+        height: 525px;
+        background-color: #def;
+        padding: 10px;
+        border_radius: 4px;
+    }
+    .rightside{
+        float: left;
+        margin-left: 10px;
+    }
+    #sketchpad{
+        float: left;
+        border: 2px solid #888;
+        border-radius: 4px;
+        position: relative;
+        cursor: url("image.png"), auto;
+    }
+    .new{
+        cursor: url("download.png"), auto;
+    }
+    </style>
+</head>
+<body onload ="init()">
+        <nav class="navbar navbar-inverse">
+                <div class="container-fluid">
+                  <div class="navbar-header">
+                    <a class="navbar-brand" href="#">KIDS-ZONE</a>
+                  </div>
+                  <ul class="nav navbar-nav">
+                    <li class="active"><a href="sketchpad_online.html">Sketch-Pad</a></li>
+                    <li><a href="C:\Users\Amit Bansal\Game_development\Flappy_bird\flappy_birds.html">Play Flappy Birds!</a></li>
+                    <li><a href="C:\Users\Amit Bansal\Web_development_complete\Typing Test\index.html">Test Your Typing!</a></li>
+                  </ul>
+                </div>
+              </nav>
+    <div id ="sketchpadapp">
+        <div class="leftside">
+            <input class="btn btn-primary" type="submit" value="clear sketchpad" onclick="clearCanvas(canvas, ctx)">
+            <br><br><br>
+            <input class="btn btn-secondary new" type="submit" value="pick eraser" onclick="erase()">
+            <br><br><br>
+            <h4>Increase point of pencil or eraser</h4>
+            <input class="btn btn-success" type="submit" value="+" onclick="inc_size()">
+            <input class="btn btn-success" type="submit" value="-" onclick="dec_size()">
+            <br><br><br>
+            <input class="btn btn-danger" type="submit" value="pick red" onclick="pick_color(255, 0, 0)"><br><br>
+            <input class="btn btn-primary" type="submit" value="pick blue" onclick="pick_color(0, 0, 255)"><br><br>
+            <input class="btn btn-success" type="submit" value="pick green" onclick="pick_color(0, 255, 0)"><br><br>
+            <input class="btn btn-warning" type="submit" value="pick orange" onclick="pick_color(255, 153, 51)">
+        </div>
+        <div class="rightside">
+            <canvas id="sketchpad" height="540" width="1000"></canvas>
+        </div>
+    </div>
+    
+</body>
+</html>
